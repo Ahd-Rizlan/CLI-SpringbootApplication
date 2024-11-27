@@ -39,7 +39,7 @@ public class ConfigurationController {
         return new ResponseEntity<>(configurationDTO, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping()
     public ResponseEntity<ConfigurationDTO> updateConfiguration(@RequestBody Configuration updatedConfiguration) {
         long id = 1L;
         Configuration configuration = configurationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Configuration not found"));
