@@ -4,6 +4,7 @@ package com.ticketingSystem.TicketingSimulation.controller;
 import com.ticketingSystem.TicketingSimulation.dto.ConfigurationDTO;
 import com.ticketingSystem.TicketingSimulation.model.Configuration;
 import com.ticketingSystem.TicketingSimulation.repository.ConfigurationRepository;
+import com.ticketingSystem.TicketingSimulation.service.ConfigurationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,12 @@ public class ConfigurationController {
 
     @Autowired
     private ConfigurationRepository configurationRepository;
+    private final ConfigurationService configurationService;
+
+    @Autowired
+    public ConfigurationController(ConfigurationService configurationService) {
+        this.configurationService = configurationService;
+    }
 
     @GetMapping
     public ResponseEntity<ConfigurationDTO> getAllConfigurations() {
@@ -36,6 +43,9 @@ public class ConfigurationController {
         configuration.setId(1L);
         Configuration newConfiguration = configurationRepository.save(configuration);
         ConfigurationDTO configurationDTO = new ConfigurationDTO(newConfiguration);
+
+        configurationService.saveConfig(configuration);
+
         return new ResponseEntity<>(configurationDTO, HttpStatus.CREATED);
     }
 
@@ -52,9 +62,9 @@ public class ConfigurationController {
         return new ResponseEntity<>(configurationDTO,HttpStatus.OK);
     }
     @DeleteMapping()
-    public String deleteConfiguration() {
+    public ResponseEntity<String> deleteConfiguration() {
         configurationRepository.deleteAll();
-        return "Configuration deleted successfully!";
+        return new ResponseEntity<>("Configuration Deleted",HttpStatus.OK);
     }
 
 

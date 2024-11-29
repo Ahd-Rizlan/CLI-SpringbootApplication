@@ -2,14 +2,14 @@ package com.ticketingSystem.TicketingSimulation.service;
 
 import com.ticketingSystem.TicketingSimulation.model.Configuration;
 import com.ticketingSystem.TicketingSimulation.constant.Config;
-import com.ticketingSystem.TicketingSimulation.validation.HandleFiles;
-import com.ticketingSystem.TicketingSimulation.validation.Validation;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.Scanner;
 
+@Service
 public class ConfigurationService {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
