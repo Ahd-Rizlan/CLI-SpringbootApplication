@@ -7,7 +7,7 @@ public class HandleFiles {
 
     public void writeOnGson(Configuration configuration) {
         com.ticketingSystem.TicketingSimulation.service.ConfigurationService configurationService = new ConfigurationService();
-        configurationService.writeGson(configuration);
+        configurationService.saveConfig(configuration);
     }
 
 //    public Integer readOnGson() {

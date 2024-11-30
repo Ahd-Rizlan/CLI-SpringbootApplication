@@ -2,11 +2,11 @@ package com.ticketingSystem.TicketingSimulation.dto;
 
 import com.ticketingSystem.TicketingSimulation.model.Configuration;
 
-public class ConfigurationDTO {
-    private int totalTickets;
-    private int maxTicketCapacity;
-    private int ticketReleaseRate;
-    private int customerRetrievalRate;
+    public class ConfigurationDTO {
+        private int totalTickets;
+        private int maxTicketCapacity;
+        private int ticketReleaseRate;
+        private int customerRetrievalRate;
 
     public ConfigurationDTO(Configuration configuration) {
         this.totalTickets= configuration.getTotalTickets();
