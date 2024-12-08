@@ -2,45 +2,50 @@ package com.ticketingSystem.TicketingSimulation.model;
 
 import com.ticketingSystem.TicketingSimulation.constant.Config;
 import com.ticketingSystem.TicketingSimulation.validation.AutoIdGeneration;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 
+
+
+@Table(name = "Customer_tbl")
+@Entity
 public class Customer {
 
-
-        private static final AutoIdGeneration customerAutoIdGeneration = new AutoIdGeneration(0);
-        private final Ticketpool ticketpool;
-        private final ArrayList<Ticket> purchasedTickets;
-
-        private String customerId;
-        private boolean isVip;
-        private int ticketsPerPurchase;
-        private int retrievalInterval;
+    @Id
+    private String customerId;
+    private static final AutoIdGeneration customerAutoIdGeneration = new AutoIdGeneration(0);
+    private boolean isVip;
+    private int ticketsPerPurchase;
+    private int retrievalInterval;
 
 
-        public Customer(boolean isVip, int ticketsPerPurchase, Ticketpool ticketPool, Configuration config) {
-            this.customerId = customerAutoIdGeneration.generateAutoId("CId");
-            this.retrievalInterval = config.getCustomerRetrievalRate();
-            this.ticketsPerPurchase = ticketsPerPurchase;
-            this.ticketpool = ticketPool;
-            this.purchasedTickets = new ArrayList<>();
-            this.isVip = isVip;
+    @PrePersist
+    private void generateVendorId() {
+        if (this.customerId == null || this.customerId.isEmpty()) {
+            this.customerId = "Customer-" + customerAutoIdGeneration.generateAutoId("CID"); // Example: Vendor-1234abcd
         }
+    }
+    public Customer(){}
 
-        public Customer(boolean isVip, int ticketsPerPurchase, int retrievalInterval, Ticketpool ticketPool, Configuration config) {
-            this.customerId = customerAutoIdGeneration.generateAutoId("CId");
-            this.retrievalInterval = retrievalInterval;
-            this.ticketsPerPurchase = ticketsPerPurchase;
-            this.ticketpool = ticketPool;
-            this.purchasedTickets = new ArrayList<>();
-            this.isVip = isVip;
-        }
+    public int getRetrievalInterval() {
+        return retrievalInterval;
+    }
 
+    public void setRetrievalInterval(int retrievalInterval) {
+        this.retrievalInterval = retrievalInterval;
+    }
 
-        public boolean isVip() {
-            return isVip;
-        }
+    public void setTicketsPerPurchase(int ticketsPerPurchase) {
+        this.ticketsPerPurchase = ticketsPerPurchase;
+    }
 
+    public boolean getIsVip() {
+        return isVip;
+    }
+        public void setVip(boolean vip) {
+        this.isVip = vip;
+    }
         public String getCustomerId() {
             return customerId;
         }
@@ -49,9 +54,6 @@ public class Customer {
             return ticketsPerPurchase;
         }
 
-        public int getPurchasedTickets() {
-            return purchasedTickets.size();
-        }
 
         @Override
         public String toString() {

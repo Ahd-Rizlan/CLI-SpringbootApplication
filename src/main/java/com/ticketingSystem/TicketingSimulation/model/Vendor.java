@@ -1,7 +1,5 @@
 package com.ticketingSystem.TicketingSimulation.model;
 
-import com.ticketingSystem.TicketingSimulation.constant.Config;
-import com.ticketingSystem.TicketingSimulation.constant.TicketStatus;
 import com.ticketingSystem.TicketingSimulation.validation.AutoIdGeneration;
 import jakarta.persistence.*;
 
@@ -10,7 +8,6 @@ import java.util.ArrayList;
 @Entity
 public class Vendor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  String vendorId;
     private static final AutoIdGeneration vendorAutoIdGeneration = new AutoIdGeneration(0);
     private  int frequency;
@@ -46,7 +43,7 @@ public class Vendor {
 
 
     public String getVendorId() {
-        return vendorId= vendorAutoIdGeneration.generateAutoId("VId");
+        return vendorId= this.vendorId;
     }
 
     public int getTotalTicketsToRelease() {
