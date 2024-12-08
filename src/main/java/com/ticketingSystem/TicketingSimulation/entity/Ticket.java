@@ -1,4 +1,5 @@
-package com.ticketingSystem.TicketingSimulation.model;
+package com.ticketingSystem.TicketingSimulation.entity;
+
 
 import com.ticketingSystem.TicketingSimulation.constant.TicketStatus;
 import com.ticketingSystem.TicketingSimulation.validation.AutoIdGeneration;
@@ -37,4 +38,5 @@ public class Ticket {
         return "Ticket [ticketId=" + ticketId + "]";
     }
 }
+
 

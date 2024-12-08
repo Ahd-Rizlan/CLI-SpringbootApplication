@@ -1,5 +1,4 @@
-package com.ticketingSystem.TicketingSimulation.model;
-
+package com.ticketingSystem.TicketingSimulation.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

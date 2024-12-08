@@ -2,7 +2,7 @@ package com.ticketingSystem.TicketingSimulation.controller;
 
 
 import com.ticketingSystem.TicketingSimulation.dto.ConfigurationDTO;
-import com.ticketingSystem.TicketingSimulation.model.Configuration;
+import com.ticketingSystem.TicketingSimulation.entity.Configuration;
 import com.ticketingSystem.TicketingSimulation.repository.ConfigurationRepository;
 import com.ticketingSystem.TicketingSimulation.service.ConfigurationService;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,6 +35,11 @@ public class ConfigurationController {
         ConfigurationDTO configurationDTO = new ConfigurationDTO(configuration);
 
         return new ResponseEntity<>(configurationDTO, HttpStatus.OK);
+    }
+    @GetMapping
+    public Configuration getConfigurations() {
+         Configuration configuration = configurationRepository.getReferenceById(1L);
+        return configuration;
     }
 
     @PostMapping

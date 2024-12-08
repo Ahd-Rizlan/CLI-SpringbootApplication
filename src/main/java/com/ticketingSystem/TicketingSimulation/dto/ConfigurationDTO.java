@@ -1,6 +1,6 @@
 package com.ticketingSystem.TicketingSimulation.dto;
 
-import com.ticketingSystem.TicketingSimulation.model.Configuration;
+import com.ticketingSystem.TicketingSimulation.entity.Configuration;
 
     public class ConfigurationDTO {
         private int totalTickets;
