@@ -18,7 +18,7 @@ public class Customer implements Runnable {
     private boolean isVip;
     private int ticketsPerPurchase;
     private int retrievalInterval;
-    private final SimulationController simulationController;
+
 
     public Customer(boolean isVip, int ticketsPerPurchase, Ticketpool ticketPool, Configuration config) {
         this.customerId = customerAutoIdGeneration.generateAutoId("CId");
@@ -27,7 +27,7 @@ public class Customer implements Runnable {
         this.ticketpool = ticketPool;
         this.purchasedTickets = new ArrayList<>();
         this.isVip = isVip;
-        this.simulationController = new SimulationController();
+
     }
 
     public Customer(boolean isVip, int ticketsPerPurchase, int retrievalInterval, Ticketpool ticketPool, Configuration config) {
@@ -37,7 +37,7 @@ public class Customer implements Runnable {
         this.ticketpool = ticketPool;
         this.purchasedTickets = new ArrayList<>();
         this.isVip = isVip;
-        this.simulationController = new SimulationController();
+
     }
 
     public boolean getIsVip() {

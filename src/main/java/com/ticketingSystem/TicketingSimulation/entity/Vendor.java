@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
-
 public class Vendor implements Runnable {
 
 
@@ -17,19 +16,15 @@ public class Vendor implements Runnable {
     private static final AutoIdGeneration vendorAutoIdGeneration = new AutoIdGeneration(0);
     private static final Logger logger = LoggerFactory.getLogger(Vendor.class);
     private final Ticketpool ticketpool;
-    private final ArrayList<Ticket> releasingTickets;
 
     private final String vendorId;
-    private  int frequency;
+    private final int frequency;
     private int totalTicketsToRelease = 0;
     private int ticketsPerRelease;
 
 
 
-
-
-
-    public Vendor( int ticketsPerRelease, int frequency, Ticketpool ticketpool, Configuration config) {
+    public Vendor(int ticketsPerRelease, int frequency, Ticketpool ticketpool, Configuration config) {
         this.vendorId = vendorAutoIdGeneration.generateAutoId("VId");
         this.frequency = frequency;
         this.ticketsPerRelease = ticketsPerRelease;
@@ -57,21 +52,21 @@ public class Vendor implements Runnable {
     public void setTicketsPerRelease(int ticketsPerRelease) {
         this.ticketsPerRelease = ticketsPerRelease;
     }
+    private final ArrayList<Ticket> releasingTickets;
 
-    public int getFrequency() {
-        return frequency;
+    public ArrayList<Ticket> getReleasingTickets() {
+        return releasingTickets;
     }
-
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
-    }
+//    public int getTotalTickets() {
+//        return releasingTickets.size();
+//    }
 
     @Override
     public String toString() {
         return "Vendor{" +
                 "Id =" + vendorId +
                 //    "Total Tickets To Release = " + totalTicketsToRelease +
-                " Tickets Per Release = " + ticketsPerRelease +
+                "Tickets Per Release = " + ticketsPerRelease +
                 "Ticket Release Rate =" + frequency +
                 '}';
     }
@@ -80,7 +75,7 @@ public class Vendor implements Runnable {
     @Override
     public void run() {
         Thread.currentThread().setName(getVendorId());
-        Thread.currentThread().setPriority(Config.HighPriority);
+        Thread.currentThread().setPriority(Config.LowPriority);
 
         // Release Tickets List
         int totalTicketsForRelease;
@@ -113,6 +108,7 @@ public class Vendor implements Runnable {
                     } else {
                         logger.info("Vendor {} Released {} Tickets to the Ticket Pool", vendorId, releasableTickets);
                         ticketpool.addTicket(this, releasableTickets);
+
 
                         //Substracting the releasable tickets from the total tickets
                         logger.debug("Vendor {} is Substracting the releasable tickets {} from the total tickets {}", vendorId, releasableTickets, totalTicketsForRelease);

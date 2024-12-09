@@ -9,11 +9,21 @@ public class Ticket {
 
     private String ticketId;
     private TicketStatus status;
+    private Vendor vendor;
 
 
     public Ticket(Vendor Vendor) {
         this.ticketId = ticketAutoIdGeneration.generateAutoId("TId");
         this.status = TicketStatus.PENDING;
+        this.vendor = Vendor;
+    }
+
+    public Vendor getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
     }
 
     public String getTicketId() {

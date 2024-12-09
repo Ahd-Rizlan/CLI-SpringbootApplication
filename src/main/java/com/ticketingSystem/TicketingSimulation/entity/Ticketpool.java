@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Ticketpool {
     private static final Logger logger = LoggerFactory.getLogger(Ticketpool.class);
@@ -50,48 +51,10 @@ public class Ticketpool {
         logger.debug("Total Number of Vendors : {}", Config.TotalNumberOfVendors);
         logger.debug("Tickets to be released by each Vendor : {}", tickerCount);
 
-        //updating the total number of tickets
-        //   currentSizeOfLargePool = currentSizeOfLargePool + tickerCount;
-
-        //   System.out.println("Vendor trying to add " + tickerCount);
         logger.info("Maximum Tickets Released by Vendor : {} is {} ", vendor.getVendorId(), tickerCount);
 
-        //  ArrayList<Ticket> TotalTicketsToBeReleased = new ArrayList<>();
-        //  System.out.println("Vendor Added " + tickerCount + " Tickets");
         return tickerCount;
     }
-
-//    public synchronized int addTicketsOnMainPool(Configuration configuration) {
-//        int tickerCount = (Config.TotalTicketsToRelease / Config.TotalNumberOfVendors);
-//        System.out.println("Vendor trying to add " + tickerCount);
-//        //  ArrayList<Ticket> TotalTicketsToBeReleased = new ArrayList<>();
-//        int TotalTicketsToBeReleased = tickerCount;
-//        System.out.println(configuration.getVendorId());
-//        System.out.println("Vendor Added " + tickerCount + " Tickets");
-////        TotalTicketsToBeReleased.size();
-////        return TotalTicketsToBeReleased;
-//
-//    }
-
-
-//    public synchronized void addTicket(Vendor vendor, ArrayList<Ticket> tickets) {
-//        //TODO update total ticket'
-//
-//        if (ticketPool.size() == maxCapacity) {
-//            System.out.println("TicketPool - " + "Maximum Pool Capacity Reached " + ticketPool.size());
-//            try {
-//                wait();
-//                //TODO
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//        } else {
-//            ticketPool.addAll(tickets);
-//            System.out.println("Vendor" + " : " + vendor.getVendorId() + " Added " + tickets.size() + " tickets : " + "Updated TicketPool Size :" + ticketPool.size());
-//            notifyAll();
-//            //TODO LOGG AS TICKET ADDED
-//        }
-//    }
 
     public synchronized void addTicket(Vendor vendor, int TotalTicketsToBeReleased) {
 //
@@ -115,6 +78,8 @@ public class Ticketpool {
                 Ticket ticket = new Ticket(vendor);
                 ticket.setStatus(TicketStatus.PENDING);
                 tickets.add(ticket);
+                //add ticket to customer pool
+                vendor.getReleasingTickets().add(ticket);
                 currentSizeOfLargePool++;
                 logger.debug("Ticket Added to the Pool : {} by Vendor {} ", ticket, vendor.getVendorId());
             }
@@ -170,10 +135,16 @@ public class Ticketpool {
 
             for (int i = 0; i < requiredTickets; i++) {
                 ticketPool.getFirst().setStatus(TicketStatus.ACCQUIRED);
+                 Vendor vendor = ticketPool.getFirst().getVendor();
+                    //changing the vendor ticket Status 
+                 for (int ticket =0 ; ticket<vendor.getReleasingTickets().size(); ticket++){
+                     if (Objects.equals(vendor.getReleasingTickets().getFirst().getTicketId(), ticketPool.getFirst().getTicketId())){
+                       vendor.getReleasingTickets().getFirst().setStatus(TicketStatus.ACCQUIRED);
+                 }
                 purchasedTickets.add(ticketPool.getFirst());
                 ticketPool.removeFirst();
                 LargePoolSize--;
-            }
+            }                          }
 //            System.out.println("Customer" + customer.getCustomerId() + " - " + " Purchased " + customer.getTicketsPerPurchase() + " tickets ;" + "Remaining Tickets Available :" + ticketPool.size());
             logger.info("Customer {} is Purchasing {} Tickets", customer.getCustomerId(), customer.getTicketsPerPurchase());
             logger.info("TicketPool Size {} , LargePool Size {} ", ticketPool.size(), LargePoolSize);

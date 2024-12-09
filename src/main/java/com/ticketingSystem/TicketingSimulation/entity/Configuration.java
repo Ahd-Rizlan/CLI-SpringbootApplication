@@ -16,14 +16,19 @@ public class Configuration implements Serializable {
 
     @Id
     private long id = 1L;
-    private int totalTickets;//Number of tickets released at once
-    private int maxTicketCapacity;//max a pool can hold at a moment
-    private int ticketReleaseRate;
-    private int customerRetrievalRate;
+    private int totalTickets ;//Number of tickets released at once
+    private int maxTicketCapacity ;//max a pool can hold at a moment
+    private int ticketReleaseRate ;
+    private int customerRetrievalRate ;
 
 
 
-    public Configuration() {}
+    public Configuration() {
+        this.totalTickets = 0;
+        this.maxTicketCapacity= 0;
+        this.ticketReleaseRate=0;
+        this.customerRetrievalRate=0;
+    }
 
     public int getTotalTickets() {
         return totalTickets;
@@ -63,5 +68,16 @@ public class Configuration implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Configuration{" +
+                "id=" + id +
+                ", totalTickets=" + totalTickets +
+                ", maxTicketCapacity=" + maxTicketCapacity +
+                ", ticketReleaseRate=" + ticketReleaseRate +
+                ", customerRetrievalRate=" + customerRetrievalRate +
+                '}';
     }
 }

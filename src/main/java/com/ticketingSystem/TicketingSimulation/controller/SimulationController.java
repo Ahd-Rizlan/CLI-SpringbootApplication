@@ -2,12 +2,10 @@ package com.ticketingSystem.TicketingSimulation.controller;
 
 import ch.qos.logback.classic.Logger;
 import com.ticketingSystem.TicketingSimulation.constant.Config;
-import com.ticketingSystem.TicketingSimulation.entity.Configuration;
 import com.ticketingSystem.TicketingSimulation.entity.Customer;
 import com.ticketingSystem.TicketingSimulation.entity.Vendor;
 import com.ticketingSystem.TicketingSimulation.entity.Ticketpool;
-import com.ticketingSystem.TicketingSimulation.repository.CustomerRepository;
-import com.ticketingSystem.TicketingSimulation.repository.VendorRepository;
+import com.ticketingSystem.TicketingSimulation.service.ConfigurationService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +21,6 @@ public class SimulationController {
 
     @Autowired
     private ConfigurationController configurationController;
-    @Autowired
-    private VendorRepository vendorRepository;
-    @Autowired
-    private CustomerRepository customerRepository;
 
 
     Logger logger = (Logger) LoggerFactory.getLogger(SimulationController.class);
@@ -36,6 +30,8 @@ public class SimulationController {
     private ArrayList<Thread> customerThreadList = new ArrayList<>();
     private ArrayList<Thread> vendorThreadList = new ArrayList<>();
     private volatile boolean isSimulationRunning = true;
+    @Autowired
+    private ConfigurationService configurationService;
 
     @PostMapping("/createVendors")
     public ResponseEntity<List> createVendors(@RequestParam int NumberOFVendors, @RequestParam int TicketsPerRelease, @RequestParam int FrequencyInSeconds) {
@@ -43,13 +39,14 @@ public class SimulationController {
 
         Config.TotalNumberOfVendors += NumberOFVendors;
         for (int i = 0; i < NumberOFVendors; i++) {
-            Vendor vendor = new Vendor(TicketsPerRelease, FrequencyInSeconds, ticketpool, configurationController.getConfigurations());
+            Vendor vendor = new Vendor(TicketsPerRelease, FrequencyInSeconds, ticketpool, configurationService.getConfiguration());
+            System.out.println(configurationService.getConfiguration().toString());
             vendorTList.add(vendor);
             createdVendor.add(vendor);
             Thread vendorThread = new Thread(vendor);
             System.out.println("Vendor Created" + vendor.toString());
             logger.info("Vendor Created" + vendor.toString());
-            vendorRepository.save(vendor);
+
             vendorThreadList.add(vendorThread);
         }
         return new ResponseEntity<>(createdVendor, HttpStatus.OK);
@@ -59,13 +56,13 @@ public class SimulationController {
     public ResponseEntity<List> createCustomers(@RequestParam int NumberOFCustomers, @RequestParam int TicketsPerPurchase, @RequestParam int ReterivalInterval, @RequestParam boolean isVip) {
         ArrayList<Customer> createdCustomer = new ArrayList<>();
         for (int i = 0; i < NumberOFCustomers; i++) {
-            Customer customer = new Customer(isVip, TicketsPerPurchase, ReterivalInterval, ticketpool, configurationController.getConfigurations());
+            Customer customer = new Customer(isVip, TicketsPerPurchase, ReterivalInterval, ticketpool, configurationService.getConfiguration());
             customerList.add(customer);// Adding Customer to All Customers List
             createdCustomer.add(customer);// Adding Customer to Created Customers List
             Thread customerThread = new Thread(customer);
             System.out.println("Customer Created" + customer.toString());
             logger.info("customer Created" + customer.toString());
-            customerRepository.save(customer);
+
             customerThreadList.add(customerThread);
         }
         return new ResponseEntity<>(createdCustomer, HttpStatus.OK);
@@ -73,6 +70,7 @@ public class SimulationController {
 
     @PostMapping("/startSimulation")
     public ResponseEntity<String> startSimulation() {
+
         isSimulationRunning = true;
         for (Thread vendor : vendorThreadList) {
             vendor.start();

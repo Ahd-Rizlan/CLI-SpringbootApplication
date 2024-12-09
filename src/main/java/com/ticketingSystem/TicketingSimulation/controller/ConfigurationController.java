@@ -1,7 +1,7 @@
 package com.ticketingSystem.TicketingSimulation.controller;
 
 
-import com.ticketingSystem.TicketingSimulation.dto.ConfigurationDTO;
+import com.ticketingSystem.TicketingSimulation.DTO.ConfigurationDTO;
 import com.ticketingSystem.TicketingSimulation.entity.Configuration;
 import com.ticketingSystem.TicketingSimulation.repository.ConfigurationRepository;
 import com.ticketingSystem.TicketingSimulation.service.ConfigurationService;
@@ -38,11 +38,7 @@ public class ConfigurationController {
     }
 
     //----------------------------------------------------------------------------------
-    @GetMapping("/api/configuration/mine")
-    public Configuration getConfigurations() {
-         Configuration configuration = configurationRepository.getReferenceById(1L);
-        return configuration;
-    }
+    // Create a new configuration
     //----------------------------------------------------------------------------------
 
     @PostMapping
@@ -69,12 +65,12 @@ public class ConfigurationController {
         ConfigurationDTO configurationDTO = new ConfigurationDTO(newConfiguration);
         return new ResponseEntity<>(configurationDTO,HttpStatus.OK);
     }
-    @DeleteMapping()
-    public ResponseEntity<String> deleteConfiguration() {
-        configurationRepository.deleteAll();
-        return new ResponseEntity<>("Configuration Deleted",HttpStatus.OK);
-    }
-
+//    @DeleteMapping()
+//    public ResponseEntity<String> deleteConfiguration() {
+//        configurationRepository.deleteAll();
+//        return new ResponseEntity<>("Configuration Deleted",HttpStatus.OK);
+//    }
+//
 
 }
 
