@@ -62,9 +62,7 @@ public class Vendor implements Runnable {
     public ArrayList<Ticket> getReleasingTickets() {
         return releasingTickets;
     }
-//    public int getTotalTickets() {
-//        return releasingTickets.size();
-//    }
+
 
     @Override
     public String toString() {

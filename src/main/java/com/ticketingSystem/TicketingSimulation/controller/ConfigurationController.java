@@ -34,7 +34,7 @@ public class ConfigurationController {
     public ResponseEntity<ConfigurationDTO> getAllConfigurations() {
         List<Configuration> configurations = configurationRepository.findAll();
         if (configurations.isEmpty()) {
-            throw new  EntityNotFoundException("No Configurations Found");
+            throw new EntityNotFoundException("No Configurations Found");
         }
         Configuration configuration = configurationRepository.getReferenceById(1L);
         ConfigurationDTO configurationDTO = new ConfigurationDTO(configuration);
@@ -54,7 +54,7 @@ public class ConfigurationController {
         configuration.setId(1L);
         Configuration newConfiguration = configurationRepository.save(configuration);
         ConfigurationDTO configurationDTO = new ConfigurationDTO(newConfiguration);
-        logger.info("Created - "+configuration.toString());
+        logger.info("Created - " + configuration.toString());
         configurationService.saveConfig(configuration);
 
         return new ResponseEntity<>(configurationDTO, HttpStatus.CREATED);
@@ -70,25 +70,6 @@ public class ConfigurationController {
         configuration.setCustomerRetrievalRate(updatedConfiguration.getCustomerRetrievalRate());
         Configuration newConfiguration = configurationRepository.save(configuration);
         ConfigurationDTO configurationDTO = new ConfigurationDTO(newConfiguration);
-        return new ResponseEntity<>(configurationDTO,HttpStatus.OK);
+        return new ResponseEntity<>(configurationDTO, HttpStatus.OK);
     }
-//    @DeleteMapping()
-//    public ResponseEntity<String> deleteConfiguration() {
-//        configurationRepository.deleteAll();
-//        return new ResponseEntity<>("Configuration Deleted",HttpStatus.OK);
-//    }
-//
-
 }
-
-        //update the configuration
-
-
-        //delete the configuration
-
-
-        //config file and Database
-
-
-
-
