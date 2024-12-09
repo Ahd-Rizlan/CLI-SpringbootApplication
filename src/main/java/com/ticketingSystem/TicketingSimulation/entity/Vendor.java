@@ -24,13 +24,18 @@ public class Vendor implements Runnable {
 
 
 
-    public Vendor(int ticketsPerRelease, int frequency, Ticketpool ticketpool, Configuration config) {
+    public Vendor(int ticketsPerRelease,  Ticketpool ticketpool, Configuration config,int totalTicketsToRelease) {
         this.vendorId = vendorAutoIdGeneration.generateAutoId("VId");
-        this.frequency = frequency;
+        this.frequency = config.getTicketReleaseRate();
         this.ticketsPerRelease = ticketsPerRelease;
         this.releasingTickets = new ArrayList<>();
+        this.totalTicketsToRelease = totalTicketsToRelease;
         this.ticketpool = ticketpool;
 
+    }
+
+    public int getFrequency() {
+        return frequency;
     }
 
     public String getVendorId() {
@@ -63,11 +68,11 @@ public class Vendor implements Runnable {
 
     @Override
     public String toString() {
-        return "Vendor{" +
+        return "Vendor{ " +
                 "Id =" + vendorId +
-                //    "Total Tickets To Release = " + totalTicketsToRelease +
-                "Tickets Per Release = " + ticketsPerRelease +
-                "Ticket Release Rate =" + frequency +
+                " Total Tickets To Release = " + totalTicketsToRelease +
+                " Tickets Per Release = " + ticketsPerRelease +
+                " Ticket Release Rate =" + frequency +
                 '}';
     }
 
@@ -98,8 +103,8 @@ public class Vendor implements Runnable {
                     int releasableTickets = Math.min(ticketsPerRelease, (ticketpool.getMaxPoolCapacity() - ticketpool.getTicketPoolSize()));
                     releasableTickets = Math.min(releasableTickets, totalTicketsForRelease);
 
-                    logger.debug("Tickets Per Release = {} / Tickets in Hand = {} /Available Pool Capacity = {}", ticketsPerRelease, totalTicketsForRelease, releasableTickets);
-                    logger.debug("Vendor {} is Releasing the minimum amount from the above values {} Tickets to the Pool", vendorId, releasableTickets);
+                    logger.info("Tickets Per Release = {} / Tickets in Hand = {} /Available Pool Capacity = {}", ticketsPerRelease, totalTicketsForRelease, releasableTickets);
+                    logger.info("Vendor {} is Releasing the minimum amount from the above values {} Tickets to the Pool", vendorId, releasableTickets);
                     logger.info("Tickets Per Release = {} / Tickets in Hand = {} /Available Pool Capacity = {}", ticketsPerRelease, totalTicketsForRelease, releasableTickets);
 
                     if (releasableTickets == 0) {

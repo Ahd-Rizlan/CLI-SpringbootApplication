@@ -11,7 +11,7 @@ public class Config {
     public static final boolean NotVip = false;
     public static final int TicketsPerPurchase = 10;
     public static final int DefaultContacts = 5;
-    public static int TotalTicketsToRelease = 200;
+    public static int TotalTicketsToRelease ;
     public static int TotalNumberOfVendors;
 
 

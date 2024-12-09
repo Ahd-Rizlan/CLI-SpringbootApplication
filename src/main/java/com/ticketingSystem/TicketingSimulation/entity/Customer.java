@@ -75,9 +75,10 @@ public class Customer implements Runnable {
     @Override
     public String toString() {
         return "Customer {" +
-                "Id =" + customerId +
+                " Id =" + customerId +
+                " Is VIP = " + isVip +
                 " Tickets Per Purchase = " + ticketsPerPurchase +
-                "Ticket Purchase Rate = " + retrievalInterval +
+                " Ticket Purchase Rate = " + retrievalInterval +
                 '}';
     }
 

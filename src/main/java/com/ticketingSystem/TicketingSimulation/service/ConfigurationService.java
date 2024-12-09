@@ -32,9 +32,8 @@ public class ConfigurationService {
         }
     }
 
-public Configuration getConfiguration() {
+    public Configuration getConfiguration() {
         return configurationRepository.getReferenceById(1L);
-
     }
 
 
