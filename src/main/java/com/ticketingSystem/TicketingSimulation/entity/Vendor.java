@@ -18,7 +18,7 @@ public class Vendor implements Runnable {
     private final Ticketpool ticketpool;
     private final ArrayList<Ticket> releasingTickets;
     private final String vendorId;
-    private final int frequency;
+    private  int frequency;
     private int totalTicketsToRelease = 0;
     private int ticketsPerRelease;
 
@@ -55,9 +55,14 @@ public class Vendor implements Runnable {
     public void setTicketsPerRelease(int ticketsPerRelease) {
         this.ticketsPerRelease = ticketsPerRelease;
     }
-//    public int getTotalTickets() {
-//        return releasingTickets.size();
-//    }
+
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
 
     @Override
     public String toString() {
@@ -73,7 +78,7 @@ public class Vendor implements Runnable {
     @Override
     public void run() {
         Thread.currentThread().setName(getVendorId());
-        Thread.currentThread().setPriority(Config.LowPriority);
+        Thread.currentThread().setPriority(Config.HighPriority);
 
         // Release Tickets List
         int totalTicketsForRelease;

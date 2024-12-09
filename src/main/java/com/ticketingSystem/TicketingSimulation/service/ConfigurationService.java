@@ -1,6 +1,6 @@
 package com.ticketingSystem.TicketingSimulation.service;
 
-import com.ticketingSystem.TicketingSimulation.model.Configuration;
+import com.ticketingSystem.TicketingSimulation.entity.Configuration;
 import com.ticketingSystem.TicketingSimulation.constant.Config;
 
 import com.google.gson.Gson;

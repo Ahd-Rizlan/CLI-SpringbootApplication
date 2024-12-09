@@ -14,11 +14,11 @@ public class Customer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(Customer.class);
     private final Ticketpool ticketpool;
 
-    private final ArrayList<Ticket> purchasedTickets;
+    private  ArrayList<Ticket> purchasedTickets;
     private final String customerId;
-    private final boolean isVip;
-    private final int ticketsPerPurchase;
-    private final int retrievalInterval;
+    private  boolean isVip;
+    private  int ticketsPerPurchase;
+    private  int retrievalInterval;
 
 
     public Customer(boolean isVip, int ticketsPerPurchase, Ticketpool ticketPool, Configuration config) {
@@ -39,9 +39,28 @@ public class Customer implements Runnable {
         this.isVip = isVip;
     }
 
+    public boolean getIsVip(){
+        return isVip;
+    }
+
+    public void setRetrievalInterval(int retrievalInterval) {
+        this.retrievalInterval = retrievalInterval;
+    }
+
+    public void setTicketsPerPurchase(int ticketsPerPurchase) {
+        this.ticketsPerPurchase = ticketsPerPurchase;
+    }
 
     public boolean isVip() {
         return isVip;
+    }
+
+    public void setVip(boolean vip) {
+        isVip = vip;
+    }
+
+    public int getRetrievalInterval() {
+        return retrievalInterval;
     }
 
     public String getCustomerId() {

@@ -1,11 +1,9 @@
 package com.ticketingSystem.TicketingSimulation.controller;
 
 import com.ticketingSystem.TicketingSimulation.constant.Config;
-import com.ticketingSystem.TicketingSimulation.entity.Configuration;
 import com.ticketingSystem.TicketingSimulation.entity.Customer;
 import com.ticketingSystem.TicketingSimulation.entity.Vendor;
 import com.ticketingSystem.TicketingSimulation.entity.Ticketpool;
-import com.ticketingSystem.TicketingSimulation.repository.ConfigurationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

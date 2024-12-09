@@ -2,7 +2,7 @@ package com.ticketingSystem.TicketingSimulation.controller;
 
 import ch.qos.logback.classic.Logger;
 import com.ticketingSystem.TicketingSimulation.dto.VendorDTO;
-import com.ticketingSystem.TicketingSimulation.model.Vendor;
+import com.ticketingSystem.TicketingSimulation.entity.Vendor;
 import com.ticketingSystem.TicketingSimulation.repository.VendorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.LoggerFactory;
