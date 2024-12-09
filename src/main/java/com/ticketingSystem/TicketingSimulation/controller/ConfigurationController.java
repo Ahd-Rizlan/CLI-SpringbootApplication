@@ -36,7 +36,7 @@ public class ConfigurationController {
 
         return new ResponseEntity<>(configurationDTO, HttpStatus.OK);
     }
-    @GetMapping
+    @GetMapping("/api/configuration/mine")
     public Configuration getConfigurations() {
          Configuration configuration = configurationRepository.getReferenceById(1L);
         return configuration;

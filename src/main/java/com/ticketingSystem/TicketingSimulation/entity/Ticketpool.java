@@ -28,6 +28,13 @@ public class Ticketpool {
         this.ticketPool = Collections.synchronizedList(new ArrayList<>(configuration.getMaxTicketCapacity()));
 
     }
+    public Ticketpool(int totalTickets, int maxCapacity) {
+        this.totalTickets = totalTickets;
+        Config.TotalTicketsToRelease = totalTickets;
+        this.maxCapacity = maxCapacity;
+        this.ticketPool = Collections.synchronizedList(new ArrayList<>(maxCapacity));
+
+    }
 
 
 

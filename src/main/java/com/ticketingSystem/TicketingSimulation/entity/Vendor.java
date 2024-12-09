@@ -69,7 +69,7 @@ public class Vendor implements Runnable {
         return "Vendor{" +
                 "Id =" + vendorId +
                 //    "Total Tickets To Release = " + totalTicketsToRelease +
-                "Tickets Per Release = " + ticketsPerRelease +
+                " Tickets Per Release = " + ticketsPerRelease +
                 "Ticket Release Rate =" + frequency +
                 '}';
     }
