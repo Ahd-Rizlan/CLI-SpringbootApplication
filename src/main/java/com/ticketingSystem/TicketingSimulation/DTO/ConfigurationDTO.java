@@ -1,18 +1,34 @@
-package com.ticketingSystem.TicketingSimulation.dto;
+package com.ticketingSystem.TicketingSimulation.DTO;
 
-import com.ticketingSystem.TicketingSimulation.model.Configuration;
 
-    public class ConfigurationDTO {
-        private int totalTickets;
-        private int maxTicketCapacity;
-        private int ticketReleaseRate;
-        private int customerRetrievalRate;
+import com.ticketingSystem.TicketingSimulation.entity.Configuration;
+
+public class ConfigurationDTO {
+
+    private int maxTicketCapacity;
+    private int totalTickets;
+    private int ticketReleaseRate;
+    private int customerRetrievalRate;
+
+    public ConfigurationDTO() {
+    }
 
     public ConfigurationDTO(Configuration configuration) {
-        this.totalTickets= configuration.getTotalTickets();
-        this.maxTicketCapacity= configuration.getMaxTicketCapacity();
-        this.ticketReleaseRate= configuration.getTicketReleaseRate();
+
         this.maxTicketCapacity = configuration.getMaxTicketCapacity();
+        this.totalTickets = configuration.getTotalTickets();
+        this.ticketReleaseRate = configuration.getTicketReleaseRate();
+        this.customerRetrievalRate = configuration.getCustomerRetrievalRate();
+    }
+
+
+
+    public int getMaxTicketCapacity() {
+        return maxTicketCapacity;
+    }
+
+    public void setMaxTicketCapacity(int maxTicketCapacity) {
+        this.maxTicketCapacity = maxTicketCapacity;
     }
 
     public int getTotalTickets() {
@@ -21,14 +37,6 @@ import com.ticketingSystem.TicketingSimulation.model.Configuration;
 
     public void setTotalTickets(int totalTickets) {
         this.totalTickets = totalTickets;
-    }
-
-    public int getMaxTicketCapacity() {
-        return maxTicketCapacity;
-    }
-
-    public void setMaxTicketCapacity(int maxTicketCapacity) {
-        this.maxTicketCapacity = maxTicketCapacity;
     }
 
     public int getTicketReleaseRate() {
@@ -46,5 +54,5 @@ import com.ticketingSystem.TicketingSimulation.model.Configuration;
     public void setCustomerRetrievalRate(int customerRetrievalRate) {
         this.customerRetrievalRate = customerRetrievalRate;
     }
-
 }
+

@@ -1,10 +1,13 @@
 package com.ticketingSystem.TicketingSimulation.service;
 
-import com.ticketingSystem.TicketingSimulation.model.Configuration;
+import com.ticketingSystem.TicketingSimulation.entity.Configuration;
 import com.ticketingSystem.TicketingSimulation.constant.Config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ticketingSystem.TicketingSimulation.repository.ConfigurationRepository;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -13,6 +16,26 @@ import java.io.*;
 public class ConfigurationService {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    @Autowired
+    private ConfigurationRepository configurationRepository;
+
+    @PostConstruct
+    public void init() {
+        if (configurationRepository.count() == 0) {
+            Configuration defaultConfig = new Configuration();
+            defaultConfig.setTotalTickets(100);
+            defaultConfig.setMaxTicketCapacity(1000);
+            defaultConfig.setTicketReleaseRate(10);
+            defaultConfig.setCustomerRetrievalRate(5);
+            configurationRepository.save(defaultConfig);
+        }
+    }
+
+    public Configuration getConfiguration() {
+        return configurationRepository.getReferenceById(1L);
+    }
+
 
     public void saveConfig(Configuration configuration) {
         try(Writer writer = new FileWriter(Config.configurationFile);) {
@@ -41,6 +64,10 @@ public class ConfigurationService {
             }
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(Config.configurationFile))){
             Configuration configuration = gson.fromJson(bufferedReader, Configuration.class);
+            if (configuration == null) {
+                configuration = defaultConfiguration();
+                saveConfig(configuration);
+            }
             bufferedReader.close();
             return configuration;
         } catch (IOException e) {
@@ -60,14 +87,29 @@ public class ConfigurationService {
     }
 
 
-    public void createConfigFile( Configuration newConfiguration) {
-        Configuration readConfig = readConfiguration();
-        readConfig.setTotalTickets(newConfiguration.getTotalTickets());
-        readConfig.setMaxTicketCapacity(newConfiguration.getMaxTicketCapacity());
-        readConfig.setTicketReleaseRate(newConfiguration.getTicketReleaseRate());
-        readConfig.setCustomerRetrievalRate(newConfiguration.getCustomerRetrievalRate());
-        saveConfig(readConfig);
+//    public void createConfigFile( Configuration newConfiguration) {
+//        Configuration readConfig = readConfiguration();
+//        readConfig.setTotalTickets(newConfiguration.getTotalTickets());
+//        readConfig.setMaxTicketCapacity(newConfiguration.getMaxTicketCapacity());
+//        readConfig.setTicketReleaseRate(newConfiguration.getTicketReleaseRate());
+//        readConfig.setCustomerRetrievalRate(newConfiguration.getCustomerRetrievalRate());
+//        saveConfig(readConfig);
+//
+//    }
 
+    public void createConfigFile(Configuration newConfiguration) {
+        File configFile = new File(Config.configurationFile);
+        if (!configFile.exists()) {
+            System.out.println("Configuration file does not exist. Creating a new one.");
+            saveConfig(newConfiguration);
+        } else {
+            Configuration readConfig = readConfiguration();
+            readConfig.setTotalTickets(newConfiguration.getTotalTickets());
+            readConfig.setMaxTicketCapacity(newConfiguration.getMaxTicketCapacity());
+            readConfig.setTicketReleaseRate(newConfiguration.getTicketReleaseRate());
+            readConfig.setCustomerRetrievalRate(newConfiguration.getCustomerRetrievalRate());
+            saveConfig(readConfig);
+        }
     }
     public void deleteConfigFile() {
         File configFile = new File(Config.configurationFile);
