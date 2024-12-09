@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
+
 public class Vendor implements Runnable {
 
 
@@ -17,6 +18,7 @@ public class Vendor implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(Vendor.class);
     private final Ticketpool ticketpool;
     private final ArrayList<Ticket> releasingTickets;
+
     private final String vendorId;
     private  int frequency;
     private int totalTicketsToRelease = 0;

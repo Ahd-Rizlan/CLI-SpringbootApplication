@@ -36,11 +36,14 @@ public class ConfigurationController {
 
         return new ResponseEntity<>(configurationDTO, HttpStatus.OK);
     }
+
+    //----------------------------------------------------------------------------------
     @GetMapping("/api/configuration/mine")
     public Configuration getConfigurations() {
          Configuration configuration = configurationRepository.getReferenceById(1L);
         return configuration;
     }
+    //----------------------------------------------------------------------------------
 
     @PostMapping
     public ResponseEntity<ConfigurationDTO> createOrUpdateConfiguration(@RequestBody Configuration configuration) {
