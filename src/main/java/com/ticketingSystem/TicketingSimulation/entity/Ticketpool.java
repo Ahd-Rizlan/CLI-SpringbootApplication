@@ -119,9 +119,9 @@ public class Ticketpool {
         } else {
 
             for (int i = 0; i < requiredTickets; i++) {
-                ticketPool.get(0).setStatus(TicketStatus.ACCQUIRED);
-                purchasedTickets.add(ticketPool.get(0));
-                ticketPool.remove(0);
+                ticketPool.getFirst().setStatus(TicketStatus.ACCQUIRED);
+                purchasedTickets.add(ticketPool.getFirst());
+                ticketPool.removeFirst();
                 LargePoolSize--;
             }
             logger.info("Customer {} is Purchasing {} Tickets", customer.getCustomerId(), customer.getTicketsPerPurchase());
