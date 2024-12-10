@@ -106,6 +106,7 @@ public class SimulationController {
 
         for (Thread vendor : vendorThreadList) {
             vendor.start();
+
         }
         for (Thread customer : customerThreadList) {
             customer.start();

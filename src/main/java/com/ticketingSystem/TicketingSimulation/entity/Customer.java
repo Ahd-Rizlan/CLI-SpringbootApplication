@@ -14,7 +14,7 @@ public class Customer implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(Customer.class);
     private final Ticketpool ticketpool;
     private final ArrayList<Ticket> purchasedTickets;
-    private final String customerId;
+    private  String customerId;
     private boolean isVip;
     private int ticketsPerPurchase;
     private int retrievalInterval;
