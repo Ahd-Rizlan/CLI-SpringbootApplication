@@ -5,7 +5,7 @@ import com.ticketingSystem.TicketingSimulation.entity.Customer;
 public class CustomerDTO {
 
     private String customerId;
-    private boolean isVip;
+    private String customerType;
     private int ticketsPerPurchase;
     private int retrievalInterval;
 
@@ -14,7 +14,11 @@ public class CustomerDTO {
 
     public CustomerDTO(Customer customer) {
         this.customerId = customer.getCustomerId();
-        this.isVip = customer.isVip();
+        if (customer.getClass().getSimpleName().equals("VipCustomer")) {
+            this.customerType = "VIP";
+        } else {
+            this.customerType = "Regular";
+        }
         this.ticketsPerPurchase = customer.getTicketsPerPurchase();
         this.retrievalInterval = customer.getRetrievalInterval();
     }
@@ -27,13 +31,7 @@ public class CustomerDTO {
         this.customerId = customerId;
     }
 
-    public boolean isVip() {
-        return isVip;
-    }
 
-    public void setVip(boolean vip) {
-        isVip = vip;
-    }
 
     public int getTicketsPerPurchase() {
         return ticketsPerPurchase;
@@ -51,4 +49,11 @@ public class CustomerDTO {
         this.retrievalInterval = retrievalInterval;
     }
 
+    public String getCustomerType() {
+        return customerType;
+    }
+
+    public void setCustomerType(String customerType) {
+        this.customerType = customerType;
+    }
 }

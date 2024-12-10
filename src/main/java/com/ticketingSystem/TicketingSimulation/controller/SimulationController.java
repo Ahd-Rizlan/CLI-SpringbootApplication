@@ -4,10 +4,7 @@ import ch.qos.logback.classic.Logger;
 import com.ticketingSystem.TicketingSimulation.DTO.CustomerDTO;
 import com.ticketingSystem.TicketingSimulation.DTO.VendorDTO;
 import com.ticketingSystem.TicketingSimulation.constant.Config;
-import com.ticketingSystem.TicketingSimulation.entity.Configuration;
-import com.ticketingSystem.TicketingSimulation.entity.Customer;
-import com.ticketingSystem.TicketingSimulation.entity.Vendor;
-import com.ticketingSystem.TicketingSimulation.entity.Ticketpool;
+import com.ticketingSystem.TicketingSimulation.entity.*;
 import com.ticketingSystem.TicketingSimulation.service.ConfigurationService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,17 +82,29 @@ public class SimulationController {
         ArrayList<CustomerDTO> createdCustomerDTO = new ArrayList<>();
 
         for (int i = 0; i < NumberOFCustomers; i++) {
-            Customer customer = new Customer(isVip, TicketsPerPurchase,ticketpool, configurationService.getConfiguration());
-            customerList.add(customer);// Adding Customer to All Customers List
-            createdCustomer.add(customer);// Adding Customer to Created Customers List
-            CustomerDTO customerDTO = new CustomerDTO(customer);
-            createdCustomerDTO.add(customerDTO);
+            if (isVip) {
+                Customer customer = new VipCustomer(TicketsPerPurchase,ticketpool, configurationService.getConfiguration());
+                customerList.add(customer);// Adding Customer to All Customers List
+                createdCustomer.add(customer);// Adding Customer to Created Customers List
+                CustomerDTO customerDTO = new CustomerDTO(customer);
+                createdCustomerDTO.add(customerDTO);
 
-            Thread customerThread = new Thread(customer);
-            System.out.println("Customer Created" + customer.toString());
-           // logger.info("customer Created" + customer.toString());
+                Thread customerThread = new Thread(customer);
+                customerThread.setPriority(Config.VipPriority);
+                customerThreadList.add(customerThread);
+                System.out.println("Customer Created" + customer.toString());
+            }else {
+                Customer customer = new RegularCustomer(TicketsPerPurchase,ticketpool, configurationService.getConfiguration());
+                customerList.add(customer);// Adding Customer to All Customers List
+                createdCustomer.add(customer);// Adding Customer to Created Customers List
+                CustomerDTO customerDTO = new CustomerDTO(customer);
+                createdCustomerDTO.add(customerDTO);
+                Thread customerThread = new Thread(customer);
+                customerThread.setPriority(Config.LowPriority);
+                customerThreadList.add(customerThread);
+                System.out.println("Customer Created" + customer.toString());
+            }
 
-            customerThreadList.add(customerThread);
         }
         return new ResponseEntity<>(createdCustomerDTO, HttpStatus.OK);
     }
