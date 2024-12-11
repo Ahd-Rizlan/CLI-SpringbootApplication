@@ -1,16 +1,18 @@
-package com.ticketingSystem.TicketingSimulation.dto;
+package com.ticketingSystem.TicketingSimulation.DTO;
+
+import com.ticketingSystem.TicketingSimulation.entity.Vendor;
 
 public class VendorDTO {
-    private String vendorId;
-    private int frequency;
+    String vendorId;
     private int totalTicketsToRelease;
     private int ticketsPerRelease;
+    private final int frequency;
 
-    public VendorDTO(String vendorId, int frequency, int totalTicketsToRelease, int ticketsPerRelease) {
-        this.vendorId = vendorId;
-        this.frequency = frequency;
-        this.totalTicketsToRelease = totalTicketsToRelease;
-        this.ticketsPerRelease = ticketsPerRelease;
+    public VendorDTO(Vendor vendor) {
+        this.vendorId = vendor.getVendorId();
+        this.totalTicketsToRelease = vendor.getTotalTicketsToRelease();
+        this.ticketsPerRelease = vendor.getTicketsPerRelease();
+        this.frequency = vendor.getFrequency();
     }
 
     public String getVendorId() {
@@ -19,14 +21,6 @@ public class VendorDTO {
 
     public void setVendorId(String vendorId) {
         this.vendorId = vendorId;
-    }
-
-    public int getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
     }
 
     public int getTotalTicketsToRelease() {
@@ -43,5 +37,9 @@ public class VendorDTO {
 
     public void setTicketsPerRelease(int ticketsPerRelease) {
         this.ticketsPerRelease = ticketsPerRelease;
+    }
+
+    public int getFrequency() {
+        return frequency;
     }
 }

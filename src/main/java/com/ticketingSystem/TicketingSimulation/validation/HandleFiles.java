@@ -1,6 +1,6 @@
 package com.ticketingSystem.TicketingSimulation.validation;
 
-import com.ticketingSystem.TicketingSimulation.model.Configuration;
+import com.ticketingSystem.TicketingSimulation.entity.Configuration;
 import com.ticketingSystem.TicketingSimulation.service.ConfigurationService;;
 
 public class HandleFiles {
