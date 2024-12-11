@@ -6,6 +6,7 @@ import com.ticketingSystem.TicketingSimulation.DTO.VendorDTO;
 import com.ticketingSystem.TicketingSimulation.constant.Config;
 import com.ticketingSystem.TicketingSimulation.entity.*;
 import com.ticketingSystem.TicketingSimulation.service.ConfigurationService;
+import com.ticketingSystem.TicketingSimulation.service.SimulationService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,115 +29,87 @@ public class SimulationController {
     @Autowired
     private ConfigurationService configurationService;
 
+    @Autowired
+    private SimulationService simulationService;
+//
+//
+//    Logger logger = (Logger) LoggerFactory.getLogger(SimulationController.class);
+//
+//    private ArrayList<Customer> customerList = new ArrayList<>();
+//    private ArrayList<Vendor> vendorList = new ArrayList<>();
+//    private ArrayList<Thread> customerThreadList = new ArrayList<>();
+//    private ArrayList<Thread> vendorThreadList = new ArrayList<>();
 
-    Logger logger = (Logger) LoggerFactory.getLogger(SimulationController.class);
-    
-    private ArrayList<Customer> customerList = new ArrayList<>();
-    private ArrayList<Vendor> vendorList = new ArrayList<>();
-    private ArrayList<Thread> customerThreadList = new ArrayList<>();
-    private ArrayList<Thread> vendorThreadList = new ArrayList<>();
 
+//    @Bean
+//    @Lazy
+//    public Ticketpool ticketpool(ConfigurationService configurationService) {
+//        return new Ticketpool(configurationService.getConfiguration());
+//    }
+//    private  Ticketpool ticketpool ;
 
-    @Bean
-    @Lazy
-    public Ticketpool ticketpool(ConfigurationService configurationService) {
-        return new Ticketpool(configurationService.getConfiguration());
+    @GetMapping()
+    public ResponseEntity<String> InitiateConfiguration(){
+        simulationService.initiateConfiguration();
+        return new ResponseEntity<>("Configuration Initiated", HttpStatus.OK);
     }
-    private  Ticketpool ticketpool ;
-
-
 
     @PostMapping("/createVendors")
     public ResponseEntity<List> createVendors(@RequestParam int NumberOFVendors, @RequestParam int TicketsPerRelease) {
-        ticketpool = new Ticketpool(configurationService.getConfiguration());
-        ArrayList<Vendor> createdVendor = new ArrayList<>();
-        ArrayList<VendorDTO> createdVendorDTO = new ArrayList<>();
-        Config.TotalNumberOfVendors += NumberOFVendors;
-        int totalTicketsPerVendor = TotalTicketsToRelease / TotalNumberOfVendors;
+//        //ticketpool = new Ticketpool(configurationService.getConfiguration());
+//        ArrayList<Vendor> createdVendor = new ArrayList<>();
+//        ArrayList<VendorDTO> createdVendorDTO = new ArrayList<>();
+//        Config.TotalNumberOfVendors += NumberOFVendors;
+//        int totalTicketsPerVendor = TotalTicketsToRelease / TotalNumberOfVendors;
+//
+//
+//        for (int i = 0; i < NumberOFVendors; i++) {
+//            Vendor vendor = new Vendor(TicketsPerRelease, ticketpool,configurationService.getConfiguration(),totalTicketsPerVendor);
+//           // Vendor vendor = new Vendor(TicketsPerRelease, ticketpool,configurationService.getConfiguration());
+//            VendorDTO vendorDTO = new VendorDTO(vendor);
+//            createdVendorDTO.add(vendorDTO);
+//
+//            vendorList.add(vendor);
+//            createdVendor.add(vendor);
+//            Thread vendorThread = new Thread(vendor);
+//            System.out.println("Vendor Created " + vendor.toString());
+//
+//            //logger.info("Vendor Created{}", vendor.toString());
+//
+//            vendorThreadList.add(vendorThread);
+//        }
+//        for (Vendor vendor : vendorList) {
+//            vendor.setTotalTicketsToRelease(totalTicketsPerVendor);
+//        }
+        List<VendorDTO>createdVendorDTO ;
 
-
-        for (int i = 0; i < NumberOFVendors; i++) {
-            Vendor vendor = new Vendor(TicketsPerRelease, ticketpool,configurationService.getConfiguration(),totalTicketsPerVendor);
-           // Vendor vendor = new Vendor(TicketsPerRelease, ticketpool,configurationService.getConfiguration());
-            VendorDTO vendorDTO = new VendorDTO(vendor);
-            createdVendorDTO.add(vendorDTO);
-
-            vendorList.add(vendor);
-            createdVendor.add(vendor);
-            Thread vendorThread = new Thread(vendor);
-            System.out.println("Vendor Created " + vendor.toString());
-
-            //logger.info("Vendor Created{}", vendor.toString());
-
-            vendorThreadList.add(vendorThread);
-        }
-        for (Vendor vendor : vendorList) {
-            vendor.setTotalTicketsToRelease(totalTicketsPerVendor);
-        }
+        createdVendorDTO = simulationService.createVendors(NumberOFVendors, TicketsPerRelease);
 
         return new ResponseEntity<>(createdVendorDTO, HttpStatus.OK);
     }
 
     @PostMapping("/createCustomers")
     public ResponseEntity<List> createCustomers(@RequestParam int NumberOFCustomers, @RequestParam int TicketsPerPurchase, @RequestParam boolean isVip) {
-        ArrayList<Customer> createdCustomer = new ArrayList<>();
-        ArrayList<CustomerDTO> createdCustomerDTO = new ArrayList<>();
-
-        for (int i = 0; i < NumberOFCustomers; i++) {
-            if (isVip) {
-                Customer customer = new VipCustomer(TicketsPerPurchase,ticketpool, configurationService.getConfiguration());
-                customerList.add(customer);// Adding Customer to All Customers List
-                createdCustomer.add(customer);// Adding Customer to Created Customers List
-                CustomerDTO customerDTO = new CustomerDTO(customer);
-                createdCustomerDTO.add(customerDTO);
-
-                Thread customerThread = new Thread(customer);
-                customerThread.setPriority(Config.VipPriority);
-                customerThreadList.add(customerThread);
-                System.out.println("Customer Created" + customer.toString());
-            }else {
-                Customer customer = new RegularCustomer(TicketsPerPurchase,ticketpool, configurationService.getConfiguration());
-                customerList.add(customer);// Adding Customer to All Customers List
-                createdCustomer.add(customer);// Adding Customer to Created Customers List
-                CustomerDTO customerDTO = new CustomerDTO(customer);
-                createdCustomerDTO.add(customerDTO);
-                Thread customerThread = new Thread(customer);
-                customerThread.setPriority(Config.LowPriority);
-                customerThreadList.add(customerThread);
-                System.out.println("Customer Created" + customer.toString());
-            }
-
-        }
+        List<CustomerDTO>createdCustomerDTO;
+        createdCustomerDTO= simulationService.createCustomers(NumberOFCustomers, TicketsPerPurchase, isVip);
         return new ResponseEntity<>(createdCustomerDTO, HttpStatus.OK);
     }
 
     @PostMapping("/startSimulation")
     public ResponseEntity<String> startSimulation() {
-
-
-        for (Thread vendor : vendorThreadList) {
-            vendor.start();
-
-        }
-        for (Thread customer : customerThreadList) {
-            customer.start();
-        }
+        simulationService.startSimulation();
         return new ResponseEntity<>("Simulation Started", HttpStatus.OK);
+    }
+
+    @PostMapping("/resumeSimulation")
+    public ResponseEntity<String> resumeSimulation() {
+        simulationService.resumeSimulation();
+        return new ResponseEntity<>("Simulation Stopped", HttpStatus.OK);
     }
 
     @PostMapping("/stopSimulation")
     public ResponseEntity<String> stopSimulation() {
-        for (Thread vendorThread : vendorThreadList) {
-            vendorThread.interrupt();
-        }
-
-        for (Thread customerThread : customerThreadList) {
-            customerThread.interrupt();
-        }
-
-        vendorThreadList.clear();
-        customerThreadList.clear();
-
+        simulationService.stopSimulation();
         return new ResponseEntity<>("Simulation Stopped", HttpStatus.OK);
     }
 
