@@ -1,12 +1,12 @@
 package com.ticketingSystem.TicketingSimulation.entity;
 
-import com.ticketingSystem.TicketingSimulation.constant.Config;
-import com.ticketingSystem.TicketingSimulation.controller.SimulationController;
 import com.ticketingSystem.TicketingSimulation.validation.AutoIdGeneration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+
+import static com.ticketingSystem.TicketingSimulation.webSocketConfig.WebSocketHandler.logAndBrodcastMessage;
 
 public class Customer implements Runnable {
 
@@ -76,40 +76,34 @@ public class Customer implements Runnable {
                 '}';
     }
 
-//    private void setPriorityForVipCustomers(boolean isVip) {
-//        if (this.isVip) {
-//            logger.info("Customer {} , Identified as VIP and Setting Priority as Vip Customer", customerId);
-//            logger.debug("Setting Priority for Vip Customer , Higher Priority TO Thread {}", customerId);
-//            Thread.currentThread().setPriority(Config.VipPriority);
-//        } else {
-//            logger.info("Customer {} , Not Identified as VIP ", customerId);
-//            logger.debug("Setting up Normal Priority for Customer {}", customerId);
-//            Thread.currentThread().setPriority(Config.LowPriority);
-//        }
-//    }
+
 
     @Override
     public void run() {
         Thread.currentThread().setName(getCustomerId());
-        logger.debug("Thread Renamed to Customer Id");
-//        setPriorityForVipCustomers(this.isVip());
         boolean isActive = true;
 
         while (isActive) {
             try {
                 Thread.sleep(retrievalInterval * 1000L);
 
-                logger.info("Customer {} , Checking for Available Tickets", customerId);
+//                logger.info("Customer {} , Checking for Available Tickets", customerId);
+                System.out.println("Customer " + customerId + " is checking for available tickets");
+
                 ticketpool.removeTicket(this, purchasedTickets);
+
                 synchronized (ticketpool) {
                     if (ticketpool.getLargePoolSize() < this.getTicketsPerPurchase()) {
                         Thread.currentThread().interrupt();
-                        logger.info("Customer {} , Insufficient Tickets Available , Customer is Exited from the Pool", customerId);
-                        logger.debug("Customer thread is Interrupted ");
+//logger.info("Customer {} , Insufficient Tickets Available , Customer is Exited from the Pool", customerId);
+                      //  System.out.println("Customer " + customerId + " has exited from the pool due to insufficient tickets");
+                   //     logger.debug("Customer thread is Interrupted ");
                         if (Thread.interrupted()) {
-                            logger.info("TicketPool Size {} , LargePool Size {} ", ticketpool.getTicketPoolSize(), ticketpool.getLargePoolSize());
-                            logger.debug("TicketPool Size {} , LargePool Size {} ", ticketpool.getTicketPoolSize(), ticketpool.getLargePoolSize());
+                            logAndBrodcastMessage("Customer { "+customerId+" } Insufficient Tickets Available , Customer is Exited from the Pool");
 
+//                            logger.info("TicketPool Size {} , LargePool Size {} ", ticketpool.getTicketPoolSize(), ticketpool.getLargePoolSize());
+//                            logger.debug("TicketPool Size {} , LargePool Size {} ", ticketpool.getTicketPoolSize(), ticketpool.getLargePoolSize());
+//                            System.out.println("Customer " + customerId + " TicketPool Size " + ticketpool.getTicketPoolSize() + " , LargePool Size " + ticketpool.getLargePoolSize());
                             isActive = false;
                         }
                     }
