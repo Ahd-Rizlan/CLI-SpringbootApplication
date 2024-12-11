@@ -22,6 +22,7 @@ import static com.ticketingSystem.TicketingSimulation.constant.Config.TotalTicke
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin
 public class SimulationController {
 
     @Autowired

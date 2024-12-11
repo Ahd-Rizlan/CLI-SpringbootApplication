@@ -9,10 +9,12 @@ import com.ticketingSystem.TicketingSimulation.repository.ConfigurationRepositor
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.io.*;
 
 @Service
+
 public class ConfigurationService {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();

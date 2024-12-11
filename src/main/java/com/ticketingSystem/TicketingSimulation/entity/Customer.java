@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
+import static com.ticketingSystem.TicketingSimulation.WebSocketConfig.WebSocketHandler.logAndBrodcastMessage;
+
 public class Customer implements Runnable {
 
     private static final AutoIdGeneration customerAutoIdGeneration = new AutoIdGeneration(0);
@@ -91,7 +93,6 @@ public class Customer implements Runnable {
     @Override
     public void run() {
         Thread.currentThread().setName(getCustomerId());
-        logger.debug("Thread Renamed to Customer Id");
 //        setPriorityForVipCustomers(this.isVip());
         boolean isActive = true;
 
@@ -99,17 +100,16 @@ public class Customer implements Runnable {
             try {
                 Thread.sleep(retrievalInterval * 1000L);
 
-                logger.info("Customer {} , Checking for Available Tickets", customerId);
+                logAndBrodcastMessage("Customer " + customerId + " is looking for  " + ticketsPerPurchase + " Tickets");
+
                 ticketpool.removeTicket(this, purchasedTickets);
                 synchronized (ticketpool) {
                     if (ticketpool.getLargePoolSize() < this.getTicketsPerPurchase()) {
                         Thread.currentThread().interrupt();
-                        logger.info("Customer {} , Insufficient Tickets Available , Customer is Exited from the Pool", customerId);
-                        logger.debug("Customer thread is Interrupted ");
-                        if (Thread.interrupted()) {
-                            logger.info("TicketPool Size {} , LargePool Size {} ", ticketpool.getTicketPoolSize(), ticketpool.getLargePoolSize());
-                            logger.debug("TicketPool Size {} , LargePool Size {} ", ticketpool.getTicketPoolSize(), ticketpool.getLargePoolSize());
+                        logAndBrodcastMessage("Customer " + customerId + " is Exited from the Pool as Insufficient Tickets Available");
 
+                        if (Thread.interrupted()) {
+                            logAndBrodcastMessage("TicketPool Size "+ticketpool.getTicketPoolSize()+" , LargePool Size "+ticketpool.getLargePoolSize()+".");
                             isActive = false;
                         }
                     }

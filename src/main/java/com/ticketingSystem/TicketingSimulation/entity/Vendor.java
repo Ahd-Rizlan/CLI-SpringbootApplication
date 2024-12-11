@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
+import static com.ticketingSystem.TicketingSimulation.WebSocketConfig.WebSocketHandler.logAndBrodcastMessage;
+
 public class Vendor implements Runnable {
 
 
@@ -103,29 +105,27 @@ public class Vendor implements Runnable {
 
                     logger.info("Tickets Per Release = {} / Tickets in Hand = {} /Available Pool Capacity = {}", ticketsPerRelease, totalTicketsForRelease, releasableTickets);
                     logger.info("Vendor {} is Releasing the minimum amount from the above values {} Tickets to the Pool", vendorId, releasableTickets);
-                    logger.info("Tickets Per Release = {} / Tickets in Hand = {} /Available Pool Capacity = {}", ticketsPerRelease, totalTicketsForRelease, releasableTickets);
 
                     if (releasableTickets == 0) {
-                        logger.info("Ticket pool is full , Waiting for the Tickets to be Purchased");
+                        logAndBrodcastMessage("Ticket pool is full , Waiting for the Tickets to be Purchased");
 
                     } else {
-                        logger.info("Vendor {} Released {} Tickets to the Ticket Pool", vendorId, releasableTickets);
+
                         ticketpool.addTicket(this, releasableTickets);
+                        logAndBrodcastMessage("Remaining Tickets to be Realeased by Vendor : "+vendorId +" is "+totalTicketsForRelease);
 
 
                         //Substracting the releasable tickets from the total tickets
-                        logger.debug("Vendor {} is Substracting the releasable tickets {} from the total tickets {}", vendorId, releasableTickets, totalTicketsForRelease);
                         totalTicketsForRelease -= releasableTickets;
-                        logger.debug("Remaining Tickets to Release for Vendor {} is {}", vendorId, totalTicketsForRelease);
 
                     }
                     if (totalTicketsForRelease == 0) {
-                        logger.info("Vendor {} has released all the tickets", vendorId);
-                        logger.info("Total Released Tickets by Vendor {} is {}", vendorId, this.getTotalTicketsToRelease());
+
+
+                        logAndBrodcastMessage("Vendor "+vendorId+" has released all the Tickets ,Total Tickets Released : "+this.getTotalTicketsToRelease());
                         Thread.currentThread().interrupt();
                         if (Thread.interrupted()) {
-                            logger.info("Ticket Release is Completed for Vendor {}", vendorId);
-                            logger.info("Vendor {} is Released from the Pool ", vendorId);
+                            logAndBrodcastMessage("Vendor "+vendorId+" is Released from the Pool ");
 
                         }
                     }

@@ -14,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/api/configuration")
+@RequestMapping("api/configuration")
+
 public class ConfigurationController {
 
     @Autowired
@@ -71,5 +73,10 @@ public class ConfigurationController {
         Configuration newConfiguration = configurationRepository.save(configuration);
         ConfigurationDTO configurationDTO = new ConfigurationDTO(newConfiguration);
         return new ResponseEntity<>(configurationDTO, HttpStatus.OK);
+    }
+    @DeleteMapping()
+    public ResponseEntity<String> deleteConfiguration() {
+        configurationRepository.deleteAll();
+        return new ResponseEntity<>("Configuration Deleted", HttpStatus.OK);
     }
 }
