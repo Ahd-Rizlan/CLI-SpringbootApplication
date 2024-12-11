@@ -1,27 +1,51 @@
 package com.ticketingSystem.TicketingSimulation.service;
 
-import com.ticketingSystem.TicketingSimulation.model.Configuration;
+import com.ticketingSystem.TicketingSimulation.entity.Configuration;
 import com.ticketingSystem.TicketingSimulation.constant.Config;
-import com.ticketingSystem.TicketingSimulation.validation.HandleFiles;
-import com.ticketingSystem.TicketingSimulation.validation.Validation;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.ticketingSystem.TicketingSimulation.repository.ConfigurationRepository;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.Scanner;
 
+@Service
 public class ConfigurationService {
 
-    public void writeGson(Configuration configuration) {
-        try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    @Autowired
+    private ConfigurationRepository configurationRepository;
+
+    @PostConstruct
+    public void init() {
+        if (configurationRepository.count() == 0) {
+            Configuration defaultConfig = new Configuration();
+            defaultConfig.setTotalTickets(100);
+            defaultConfig.setMaxTicketCapacity(1000);
+            defaultConfig.setTicketReleaseRate(10);
+            defaultConfig.setCustomerRetrievalRate(5);
+            configurationRepository.save(defaultConfig);
+        }
+    }
+
+    public Configuration getConfiguration() {
+        return configurationRepository.getReferenceById(1L);
+    }
+
+
+    public void saveConfig(Configuration configuration) {
+        try(Writer writer = new FileWriter(Config.configurationFile);) {
+            //Gson gson = new GsonBuilder().setPrettyPrinting().create();
             // Gson gson = builder.create();
-            File file = new File(Config.configurationFile);
-            Writer writer = new FileWriter(file);
+           // File file = new File(Config.configurationFile);
+           // Writer writer = new FileWriter(file);
             gson.toJson(configuration, writer);
             //LOG DATA ADDED TODO
             writer.close();
-
         } catch (IOException e) {
             System.out.println("Unable to save configuration file");
             System.out.println(e.getMessage());
@@ -29,21 +53,21 @@ public class ConfigurationService {
         }
     }
 
-    public Configuration readGson() {
-        try {
-            File configFile = new File(Config.configurationFile);
+    public Configuration readConfiguration() {
+        File configFile = new File(Config.configurationFile);
+
             if (!configFile.exists()) {
                 System.out.println("Configuration file does not exist");
-                if (configFile.createNewFile()) {
-                    System.out.println("New Configuration File Created");
-                    setConfigurationFile();
-                }
-                return new Configuration();
+                Configuration defaultConfig = defaultConfiguration();
+                saveConfig(defaultConfig);
+                return defaultConfig;
             }
-
-            Gson gson = new Gson();
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(Config.configurationFile));
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(Config.configurationFile))){
             Configuration configuration = gson.fromJson(bufferedReader, Configuration.class);
+            if (configuration == null) {
+                configuration = defaultConfiguration();
+                saveConfig(configuration);
+            }
             bufferedReader.close();
             return configuration;
         } catch (IOException e) {
@@ -53,54 +77,48 @@ public class ConfigurationService {
         }
     }
 
-    public void setConfigurationFile() {
-        //Check weather the file is there are not if there pre-assign values to valriables so we can update one record
-        Scanner scanner = new Scanner(System.in);
-        HandleFiles writeFiles = new HandleFiles();
-        Validation validation = new Validation();
-        Configuration configuration = new Configuration();
-
-        boolean loop = true;
-        while (loop) {
-            System.out.println("-----------------------------------------------------------------");
-            configuration.setTotalTickets(validation.getValidation(scanner, "Enter Total Ticket capacity for Event:"));
-            // configuration.setMaxTicketCapacity(validation.getValidation(scanner, "Enter Maximum Pool Size : "));
-            int totalTicket;
-            do {
-                totalTicket = validation.getValidation(scanner, "Enter Maximum Pool Size : ");
-                configuration.setMaxTicketCapacity(totalTicket);
-                writeFiles.writeOnGson(configuration);
-            } while (!validation.validateTicketAmountforPool(totalTicket, configuration.getTotalTickets()));
-
-            configuration.setTicketReleaseRate(validation.getValidation(scanner, "Enter The Release rate : "));
-            configuration.setCustomerRetrievalRate(validation.getValidation(scanner, "Enter Purchase rate : "));
-            writeFiles.writeOnGson(configuration);
-            System.out.println("-----------------------------------------------------------------");
-            break;
-        }
+    private Configuration defaultConfiguration() {
+        Configuration defaultConfig = new Configuration();
+        defaultConfig.setTotalTickets(0);
+        defaultConfig.setMaxTicketCapacity(0);
+        defaultConfig.setTicketReleaseRate(0);
+        defaultConfig.setCustomerRetrievalRate(0);
+        return defaultConfig;
     }
 
-    public void getConfigurationFile() {
-        //put this where Starting TODO
 
+//    public void createConfigFile( Configuration newConfiguration) {
+//        Configuration readConfig = readConfiguration();
+//        readConfig.setTotalTickets(newConfiguration.getTotalTickets());
+//        readConfig.setMaxTicketCapacity(newConfiguration.getMaxTicketCapacity());
+//        readConfig.setTicketReleaseRate(newConfiguration.getTicketReleaseRate());
+//        readConfig.setCustomerRetrievalRate(newConfiguration.getCustomerRetrievalRate());
+//        saveConfig(readConfig);
+//
+//    }
+
+    public void createConfigFile(Configuration newConfiguration) {
         File configFile = new File(Config.configurationFile);
         if (!configFile.exists()) {
-            //can use with a custom message
-            System.out.println("\n");
-            setConfigurationFile();
-
+            System.out.println("Configuration file does not exist. Creating a new one.");
+            saveConfig(newConfiguration);
         } else {
-            Configuration configuration = readGson();
-            //setting Values From the File
-            configuration.setTicketReleaseRate(readGson().getTicketReleaseRate());
-            configuration.setMaxTicketCapacity(readGson().getMaxTicketCapacity());
-            configuration.setTotalTickets(readGson().getTotalTickets());
-            configuration.setCustomerRetrievalRate(readGson().getCustomerRetrievalRate());
-
-
+            Configuration readConfig = readConfiguration();
+            readConfig.setTotalTickets(newConfiguration.getTotalTickets());
+            readConfig.setMaxTicketCapacity(newConfiguration.getMaxTicketCapacity());
+            readConfig.setTicketReleaseRate(newConfiguration.getTicketReleaseRate());
+            readConfig.setCustomerRetrievalRate(newConfiguration.getCustomerRetrievalRate());
+            saveConfig(readConfig);
         }
     }
-
+    public void deleteConfigFile() {
+        File configFile = new File(Config.configurationFile);
+        if (configFile.delete()) {
+            System.out.println("Configuration file deleted successfully");
+        } else {
+            System.out.println("Failed to delete the configuration file");
+        }
+    }
     public void printConfigFile(Configuration configuration) {
         System.out.println("\n");
         System.out.println("Total Tickets : " + configuration.getTotalTickets());
