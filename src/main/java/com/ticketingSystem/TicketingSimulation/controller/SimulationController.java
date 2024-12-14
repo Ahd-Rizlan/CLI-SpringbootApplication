@@ -19,7 +19,9 @@ import java.util.List;
 
 import static com.ticketingSystem.TicketingSimulation.constant.Config.TotalNumberOfVendors;
 import static com.ticketingSystem.TicketingSimulation.constant.Config.TotalTicketsToRelease;
+import static com.ticketingSystem.TicketingSimulation.webSocketConfig.WebSocketHandler.logAndBrodcastMessage;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api")
 public class SimulationController {
@@ -124,19 +126,36 @@ public class SimulationController {
     }
 
     @PostMapping("/stopSimulation")
-    public ResponseEntity<String> stopSimulation() {
+    public void stopSimulation() {
+
         for (Thread vendorThread : vendorThreadList) {
             vendorThread.interrupt();
+            if (vendorThread.isInterrupted()) {
+               logger.warn("Vendor Thread Interrupted");
+                logAndBrodcastMessage("Vendor Thread Interrupted" );
+            }
+
+
         }
+
 
         for (Thread customerThread : customerThreadList) {
             customerThread.interrupt();
+            if (customerThread.isInterrupted()) {
+         logger.warn("customer Thread Interrupted");
+                logAndBrodcastMessage("Customer Thread Interrupted" );
+            }
+
         }
 
         vendorThreadList.clear();
         customerThreadList.clear();
 
-        return new ResponseEntity<>("Simulation Stopped", HttpStatus.OK);
+        System.out.println("System Exit");
+        logAndBrodcastMessage("Simulation Stopped");
+        System.exit(0);
+        new ResponseEntity<>("Simulation Stopped", HttpStatus.OK);
+
     }
 
 
